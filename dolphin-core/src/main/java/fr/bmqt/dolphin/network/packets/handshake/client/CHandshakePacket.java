@@ -13,7 +13,12 @@ import java.io.IOException;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
- * https://wiki.vg/Protocol#Handshake
+ * @docs https://wiki.vg/Protocol#Handshake
+ *
+ * MCP      : C00Handshake
+ * PacketID : 0x00
+ * State    : Handshaking
+ * Bound to : Server
  */
 @Getter
 @AllArgsConstructor
@@ -29,7 +34,7 @@ public class CHandshakePacket implements Packet<INetHandlerHandshakeServer> { //
         protocolVersion = buf.readVarIntFromBuffer();
         host = buf.readStringFromBuffer(255);
         port = buf.readUnsignedShort();
-        requestedState = ConnectionState.byId(buf.readVarIntFromBuffer());
+        requestedState = ConnectionState.getById(buf.readVarIntFromBuffer());
     }
 
     public void writePacketData(PacketBuffer buf) throws IOException {
