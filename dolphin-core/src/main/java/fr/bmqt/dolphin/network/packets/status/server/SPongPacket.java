@@ -11,6 +11,12 @@ import java.io.IOException;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
+ * @docs https://wiki.vg/Protocol#Pong
+ *
+ * MCP      : SPacketPong
+ * PacketID : 0x01
+ * State    : Status
+ * Bound to : Client
  */
 @AllArgsConstructor
 @Getter

@@ -11,10 +11,16 @@ import java.io.IOException;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
+ * @docs https://wiki.vg/Protocol#Request
+ *
+ * MCP      : CPacketServerQuery
+ * PacketID : 0x00
+ * State    : Status
+ * Bound to : Server
  */
 @Getter
 @AllArgsConstructor
-public class CServerQueryPacket implements Packet<INetHandlerStatusServer> { // ID : 0x00
+public class CRequestPacket implements Packet<INetHandlerStatusServer> { // ID : 0x00
 
 
     @Override

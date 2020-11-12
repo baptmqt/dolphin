@@ -11,10 +11,16 @@ import java.io.IOException;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
+ * @docs https://wiki.vg/Protocol#Pong
+ *
+ * MCP      : SPacketServerInfo
+ * PacketID : 0x00
+ * State    : Status
+ * Bound to : Client
  */
 @AllArgsConstructor
 @Getter
-public class SServerInfoPacket implements Packet<INetHandlerStatusClient> { // ID : 0x00
+public class SResponsePacket implements Packet<INetHandlerStatusClient> { // ID : 0x00
 
     /**
      * todo : Format ServerStatusResponse :
@@ -34,6 +40,6 @@ public class SServerInfoPacket implements Packet<INetHandlerStatusClient> { // I
 
     @Override
     public void processPacket(INetHandlerStatusClient handler) {
-        handler.handleServerInfo(this);
+        handler.handleResponse(this);
     }
 }
