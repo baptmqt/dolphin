@@ -21,15 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package fr.bmqt.dolphin.util.hand;
+package fr.bmqt.dolphin.network.netty;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToMessageDecoder;
+
+import javax.crypto.Cipher;
+import java.util.List;
 
 /**
- * @author Baptiste MAQUET on 11/11/2020
+ * @author Baptiste MAQUET on 12/11/2020
  * @project dolphin-parent
  */
-public enum Hand {
+public class NettyEncryptingDecoder extends MessageToMessageDecoder<ByteBuf> {
 
-    MAIN_HAND,
-    OFF_HAND
+    private final NettyEncryptionTranslator decryptionCodec;
 
+    public NettyEncryptingDecoder(Cipher cipher) {
+        this.decryptionCodec = new NettyEncryptionTranslator(cipher);
+    }
+
+    protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> objects) throws Exception {
+        objects.add(this.decryptionCodec.decipher(ctx, buf));
+    }
 }

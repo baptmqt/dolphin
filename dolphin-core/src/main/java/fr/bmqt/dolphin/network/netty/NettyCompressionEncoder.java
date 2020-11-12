@@ -1,3 +1,4 @@
+package fr.bmqt.dolphin.network.netty;
 /*
  * MIT License
  *
@@ -21,50 +22,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package fr.bmqt.dolphin.network.packets.login.client;
 
-import fr.bmqt.dolphin.network.packets.Packet;
 import fr.bmqt.dolphin.network.packets.PacketBuffer;
-import fr.bmqt.dolphin.network.packets.login.INetHandlerLoginServer;
-import lombok.AllArgsConstructor;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-import java.io.IOException;
+import java.util.zip.Deflater;
 
 /**
  * @author Baptiste MAQUET on 12/11/2020
  * @project dolphin-parent
- * @docs https://wiki.vg/Protocol#Login_Plugin_Response
- *
- * MCP      : N/C
- * PacketID : 0x02
- * State    : Login
- * Bound to : Server
  */
+@RequiredArgsConstructor
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class CLoginPluginResponsePacket implements Packet<INetHandlerLoginServer> {
+@Setter
+public class NettyCompressionEncoder extends MessageToByteEncoder<ByteBuf> {
 
-    protected int messageId;
-    protected boolean successful;
-    protected byte[] data; // optional
+    private final byte[] buffer = new byte[8192];
+    private final Deflater deflater = new Deflater();
+    private int compressionThreshold;
 
-    public void readPacketData(PacketBuffer buf) throws IOException {
-        messageId = buf.readVarIntFromBuffer();
-        successful = buf.readBoolean();
-        //todo : read data when is set;
-    }
+    protected void encode(ChannelHandlerContext ctx, ByteBuf bufIn, ByteBuf bufOut) throws Exception {
+        int length = bufIn.readableBytes();
+        PacketBuffer packetbuffer = new PacketBuffer(bufOut);
 
-    public void writePacketData(PacketBuffer buf) throws IOException {
-        buf.writeVarIntToBuffer(messageId);
-        buf.writeBoolean(successful);
-        if (data != null)
-            buf.writeByteArray(data);
-    }
+        if (length < compressionThreshold) {
+            packetbuffer.writeVarIntToBuffer(0);
+            packetbuffer.writeBytes(bufIn);
+            return;
+        }
 
-    public void processPacket(INetHandlerLoginServer handler) {
-        handler.processLoginPluginResponse(this);
+        byte[] data = new byte[length];
+        bufIn.readBytes(data);
+        packetbuffer.writeVarIntToBuffer(data.length);
+        deflater.setInput(data, 0, length);
+        deflater.finish();
+
+        while (!deflater.finished())
+            packetbuffer.writeBytes(buffer, 0, deflater.deflate(buffer));
+
+        deflater.reset();
     }
 }
