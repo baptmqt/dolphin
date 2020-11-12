@@ -12,11 +12,17 @@ import java.io.IOException;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
+ * @docs https://wiki.vg/Protocol#Set_Compression
+ * <p>
+ * MCP      : SPacketEnableCompression
+ * PacketID : 0x03
+ * State    : Login
+ * Bound to : Client
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class SEnableCompressionPacket implements Packet<INetHandlerLoginClient> {
+public class SSetCompressionPacket implements Packet<INetHandlerLoginClient> {
 
     protected int compressionThreshold;
 
@@ -32,6 +38,6 @@ public class SEnableCompressionPacket implements Packet<INetHandlerLoginClient> 
 
     @Override
     public void processPacket(INetHandlerLoginClient handler) {
-        handler.handleEnableCompression(this);
+        handler.handleSetCompression(this);
     }
 }

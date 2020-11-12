@@ -10,34 +10,39 @@ import lombok.NoArgsConstructor;
 import java.io.IOException;
 
 /**
- * @author Baptiste MAQUET on 11/11/2020
+ * @author Baptiste MAQUET on 12/11/2020
  * @project dolphin-parent
- * @docs https://wiki.vg/Protocol#Disconnect_.28login.29
- *
- * MCP      : SPacketDisconnect
- * PacketID : 0x00
+ * @docs https://wiki.vg/Protocol#Login_Plugin_Request
+ * <p>
+ * MCP      : N/C
+ * PacketID : 0x04
  * State    : Login
  * Bound to : Client
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class SDisconnectPacket implements Packet<INetHandlerLoginClient> {
+public class SLoginPluginResponsePacket implements Packet<INetHandlerLoginClient> {
 
-    //todo : need to handle https://wiki.vg/Chat
+    //todo, todo, need Identifier ??
+
+    //protected int messageId;
+    //protected String? channel;
+    // byte[] data; // optional
 
     @Override
     public void readPacketData(PacketBuffer buf) throws IOException {
+       // messageId = buf.readVarIntFromBuffer();
 
     }
 
     @Override
     public void writePacketData(PacketBuffer buf) throws IOException {
-
+       // buf.writeVarIntToBuffer(messageId);
     }
 
     @Override
     public void processPacket(INetHandlerLoginClient handler) {
-        handler.handleDisconnect(this);
+        handler.handleLoginPluginResponse(this);
     }
 }

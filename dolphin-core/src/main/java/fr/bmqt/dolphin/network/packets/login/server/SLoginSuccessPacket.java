@@ -14,6 +14,12 @@ import java.util.UUID;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
+ * @docs https://wiki.vg/Protocol#Login_Success
+ *
+ * MCP      : SPacketLoginSuccess
+ * PacketID : 0x02
+ * State    : Login
+ * Bound to : Client
  */
 @AllArgsConstructor
 @NoArgsConstructor

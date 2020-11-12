@@ -15,6 +15,12 @@ import java.security.PublicKey;
 /**
  * @author Baptiste MAQUET on 11/11/2020
  * @project dolphin-parent
+ * @docs https://wiki.vg/Protocol#Encryption_Response
+ *
+ * MCP      : CPacketEncryptionResponse
+ * PacketID : 0x01
+ * State    : Login
+ * Bound to : Server
  */
 @Getter
 @AllArgsConstructor

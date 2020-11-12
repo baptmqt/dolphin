@@ -1,6 +1,5 @@
 package fr.bmqt.dolphin.network.packets.login.client;
 
-import com.mojang.authlib.GameProfile;
 import fr.bmqt.dolphin.network.packets.Packet;
 import fr.bmqt.dolphin.network.packets.PacketBuffer;
 import fr.bmqt.dolphin.network.packets.login.INetHandlerLoginServer;
@@ -11,31 +10,38 @@ import lombok.NoArgsConstructor;
 import java.io.IOException;
 
 /**
- * @author Baptiste MAQUET on 11/11/2020
+ * @author Baptiste MAQUET on 12/11/2020
  * @project dolphin-parent
- * @docs https://wiki.vg/Protocol#Login_Start
+ * @docs https://wiki.vg/Protocol#Login_Plugin_Response
  *
- * MCP      : CPacketLoginStart
- * PacketID : 0x00
+ * MCP      : N/C
+ * PacketID : 0x02
  * State    : Login
  * Bound to : Server
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CLoginStartPacket implements Packet<INetHandlerLoginServer>{ // ID : 0x01
+public class CLoginPluginResponsePacket implements Packet<INetHandlerLoginServer> {
 
-    protected GameProfile profile;
+    protected int messageId;
+    protected boolean successful;
+    protected byte[] data; // optional
 
     public void readPacketData(PacketBuffer buf) throws IOException {
-        profile = new GameProfile(null, buf.readStringFromBuffer(16));
+        messageId = buf.readVarIntFromBuffer();
+        successful = buf.readBoolean();
+        //todo : read data when is set;
     }
 
     public void writePacketData(PacketBuffer buf) throws IOException {
-        buf.writeString(profile.getName());
+        buf.writeVarIntToBuffer(messageId);
+        buf.writeBoolean(successful);
+        if (data != null)
+            buf.writeByteArray(data);
     }
 
     public void processPacket(INetHandlerLoginServer handler) {
-        handler.processLoginStart(this);
+        handler.processLoginPluginResponse(this);
     }
 }
